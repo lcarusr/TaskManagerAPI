@@ -134,6 +134,9 @@ jobs:
           mkdir -p "$HOME/.kube"
           echo "$KUBE_CONFIG" | base64 -d > "$HOME/.kube/config"
           chmod 600 "$HOME/.kube/config"
+          # kubectl apply -f k8s/ 按字母序应用，namespace 排在最后会导致
+          # configmap/deployment/ingress 报 "namespaces not found"，故先单独 apply
+          kubectl apply -f k8s/namespace.yaml
           kubectl apply -f k8s/
           kubectl set image deployment/task-service \
             task-service=${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}:${{ github.sha }} \
