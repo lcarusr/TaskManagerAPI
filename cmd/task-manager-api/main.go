@@ -8,6 +8,7 @@ import (
 
 	"github.com/go-kratos/kratos/v2"
 	"github.com/go-kratos/kratos/v2/config"
+	"github.com/go-kratos/kratos/v2/config/env"
 	"github.com/go-kratos/kratos/v2/config/file"
 	"github.com/go-kratos/kratos/v2/log"
 	"github.com/go-kratos/kratos/v2/middleware/tracing"
@@ -61,6 +62,8 @@ func main() {
 	c := config.New(
 		config.WithSource(
 			file.NewSource(flagconf),
+			// 支持环境变量覆盖，如 SERVER_HTTP_ADDR=0.0.0.0:8080 → server.http.addr
+			env.NewSource(),
 		),
 	)
 	defer c.Close()

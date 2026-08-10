@@ -1,24 +1,28 @@
-FROM golang:1.19 AS builder
-
-COPY . /src
+# ---- Stage 1: build ----
+FROM golang:1.22-alpine AS builder
 WORKDIR /src
 
-RUN GOPROXY=https://goproxy.cn make build
+COPY go.mod go.sum ./
+RUN go mod download
 
-FROM debian:stable-slim
+COPY . .
+# 静态编译，无 cgo 依赖
+RUN CGO_ENABLED=0 make build
 
-RUN apt-get update && apt-get install -y --no-install-recommends \
-		ca-certificates  \
-        netbase \
-        && rm -rf /var/lib/apt/lists/ \
-        && apt-get autoremove -y && apt-get autoclean -y
+# ---- Stage 2: runtime ----
+FROM alpine:3.20
+RUN apk add --no-cache ca-certificates tzdata && \
+    adduser -D -u 10001 appuser
 
-COPY --from=builder /src/bin /app
+COPY --from=builder /src/bin/task-manager-api /app/task-manager-api
+COPY --from=builder /src/configs /app/configs
 
 WORKDIR /app
 
-EXPOSE 8000
-EXPOSE 9000
-VOLUME /data/conf
+# 默认监听端口 8080，可通过环境变量覆盖（SERVER_HTTP_ADDR=0.0.0.0:8080）
+ENV SERVER_HTTP_ADDR=0.0.0.0:8080
+USER appuser
+EXPOSE 8080
 
-CMD ["./server", "-conf", "/data/conf"]
+ENTRYPOINT ["/app/task-manager-api"]
+CMD ["-conf", "/app/configs"]
