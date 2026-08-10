@@ -30,7 +30,9 @@ kubectl create secret docker-registry ghcr-secret `
   --docker-password=<PAT> `
   -n task-manager
 
-# 3) 部署全部资源
+# 3) 部署全部资源（先 apply namespace，其余资源依赖它；
+#    kubectl apply -f k8s/ 按字母序，namespace 排在最后会报 not found）
+kubectl apply -f k8s/namespace.yaml
 kubectl apply -f k8s/
 
 # 4) 验证
