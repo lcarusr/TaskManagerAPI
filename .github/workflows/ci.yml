@@ -21,10 +21,12 @@ jobs:
         uses: actions/setup-go@v5
         with:
           go-version: '1.26'
-      - name: golangci-lint
-        uses: golangci/golangci-lint-action@v6
-        with:
-          args: --timeout=5m
+      # 用 setup-go 的 go1.26 现场编译 golangci-lint，避免预编译二进制
+      # 的 Go 版本低于 go.mod 目标（go1.25.7）导致 "used to build golangci-lint is lower" 报错
+      - name: Install golangci-lint
+        run: go install github.com/golangci/golangci-lint/cmd/golangci-lint@v1.64.8
+      - name: Run golangci-lint
+        run: golangci-lint run --timeout=5m ./...
 
   test:
     name: Test
