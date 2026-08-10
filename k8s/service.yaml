@@ -1,0 +1,13 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: task-service
+  namespace: task-manager
+spec:
+  # 作业要求：ClusterIP 类型，暴露 8080 端口
+  type: ClusterIP
+  selector:
+    app: task-manager
+  ports:
+    - port: 8080
+      targetPort: 8080

@@ -1,0 +1,19 @@
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: task-manager-ingress
+  namespace: task-manager
+spec:
+  # 作业要求：域名 task-manager.local
+  # 前置条件：集群已安装 Ingress Controller（如 ingress-nginx）
+  rules:
+    - host: task-manager.local
+      http:
+        paths:
+          - path: /
+            pathType: Prefix
+            backend:
+              service:
+                name: task-service
+                port:
+                  number: 8080
