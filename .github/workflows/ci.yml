@@ -8,7 +8,9 @@ on:
 
 env:
   REGISTRY: ghcr.io
-  IMAGE_NAME: ${{ github.repository }}
+  # Docker 镜像名必须全小写：ghcr.io/lcarusr/task-manager-api:<sha>
+  # 镜像名与仓库名（lcarusr/TaskManagerAPI）解耦，符合作业要求的镜像 tag 规范
+  IMAGE_NAME: ${{ github.repository_owner }}/task-manager-api
 
 jobs:
   lint:
