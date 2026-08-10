@@ -1,0 +1,11 @@
+syntax = "proto3";
+
+package task.v1;
+
+option go_package = "task-manager-api/api/task/v1;v1";
+
+// ErrorReason defines the error reasons for the task service.
+enum ErrorReason {
+  TASK_NOT_FOUND = 0;
+  TASK_INVALID_ARGUMENT = 1;
+}

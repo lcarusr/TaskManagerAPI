@@ -14,6 +14,49 @@
 - Docker 多阶段构建（镜像 < 150MB，非 root 用户运行）
 - Kubernetes 部署（namespace / Deployment / Service / ConfigMap / Ingress）
 
+## API
+
+| 方法 | 路径 | 功能 | 成功 | 失败 |
+|------|------|------|------|------|
+| GET | /health | 健康检查 | 200 | - |
+| GET | /tasks | 获取所有任务 | 200 | - |
+| GET | /tasks/{id} | 按 ID 获取任务 | 200 | 404 |
+| POST | /tasks | 创建任务 | 201 | 400 |
+| PUT | /tasks/{id} | 更新任务（部分更新） | 200 | 404 / 400 |
+| DELETE | /tasks/{id} | 删除任务 | 204 | 404 |
+
+### 数据模型
+
+```json
+{
+  "id": "550e8400-e29b-41d4-a716-446655440000",
+  "title": "任务标题",
+  "description": "任务描述",
+  "status": "todo | in_progress | done",
+  "created_at": "2026-01-01T00:00:00Z",
+  "updated_at": "2026-01-01T00:00:00Z"
+}
+```
+
+### 示例
+
+```bash
+# 创建任务
+curl -X POST http://localhost:8080/tasks \
+  -H "Content-Type: application/json" \
+  -d '{"title":"写报告","description":"Q3 总结","status":"todo"}'
+
+# 更新任务（部分更新：仅覆盖请求中出现的字段）
+curl -X PUT http://localhost:8080/tasks/<id> \
+  -H "Content-Type: application/json" \
+  -d '{"status":"done"}'
+
+# 查询 / 删除
+curl http://localhost:8080/tasks
+curl http://localhost:8080/tasks/<id>
+curl -X DELETE http://localhost:8080/tasks/<id>   # 204
+```
+
 ## 技术栈
 
 | 组件 | 选型 |
