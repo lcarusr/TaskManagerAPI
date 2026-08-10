@@ -22,7 +22,7 @@ spec:
       containers:
         - name: task-service
           # CI 推送后由 deploy 阶段 kubectl set image 覆盖为 <sha> 版本
-          image: ghcr.io/lcarusr/TaskManagerAPI:latest
+          image: ghcr.io/lcarusr/task-manager-api:latest
           ports:
             - containerPort: 8080
           envFrom:
