@@ -3,31 +3,19 @@ package server
 import (
 	"net/http"
 
-	v1 "task-manager-api/api/todo/v1"
+	v1 "task-manager-api/api/task/v1"
 	"task-manager-api/internal/conf"
 	"task-manager-api/internal/service"
 
 	"github.com/go-kratos/kratos/v3/middleware/recovery"
-	"github.com/go-kratos/kratos/v3/middleware/validate"
 	khttp "github.com/go-kratos/kratos/v3/transport/http"
-
-	"go.einride.tech/aip/fieldbehavior"
-	"google.golang.org/protobuf/proto"
 )
 
 // NewHTTPServer new an HTTP server.
-func NewHTTPServer(c *conf.Server, todo *service.TodoService) *khttp.Server {
+func NewHTTPServer(c *conf.Server, task *service.TaskService) *khttp.Server {
 	var opts = []khttp.ServerOption{
 		khttp.Middleware(
 			recovery.Recovery(),
-			validate.Validator(func(req any) error {
-				if msg, ok := req.(proto.Message); ok {
-					if err := fieldbehavior.ValidateRequiredFields(msg); err != nil {
-						return err
-					}
-				}
-				return nil
-			}),
 		),
 	}
 	if c.Http.Network != "" {
@@ -46,6 +34,6 @@ func NewHTTPServer(c *conf.Server, todo *service.TodoService) *khttp.Server {
 		w.WriteHeader(http.StatusOK)
 		_, _ = w.Write([]byte(`{"status":"ok"}`))
 	})
-	v1.RegisterTodoServiceHTTPServer(srv, todo)
+	v1.RegisterTaskServiceHTTPServer(srv, task)
 	return srv
 }

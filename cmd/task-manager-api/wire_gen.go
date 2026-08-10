@@ -7,13 +7,13 @@
 package main
 
 import (
+	"github.com/go-kratos/kratos/v3"
+	"log/slog"
 	"task-manager-api/internal/biz"
 	"task-manager-api/internal/conf"
 	"task-manager-api/internal/data"
 	"task-manager-api/internal/server"
 	"task-manager-api/internal/service"
-	"github.com/go-kratos/kratos/v3"
-	"log/slog"
 )
 
 import (
@@ -28,11 +28,11 @@ func wireApp(confServer *conf.Server, confData *conf.Data, logger *slog.Logger) 
 	if err != nil {
 		return nil, nil, err
 	}
-	todoRepo := data.NewTodoRepo(dataData)
-	todoUsecase := biz.NewTodoUsecase(todoRepo)
-	todoService := service.NewTodoService(todoUsecase)
-	grpcServer := server.NewGRPCServer(confServer, todoService)
-	httpServer := server.NewHTTPServer(confServer, todoService)
+	taskRepo := data.NewTaskRepo(dataData)
+	taskUsecase := biz.NewTaskUsecase(taskRepo)
+	taskService := service.NewTaskService(taskUsecase)
+	grpcServer := server.NewGRPCServer(confServer, taskService)
+	httpServer := server.NewHTTPServer(confServer, taskService)
 	app := newApp(logger, grpcServer, httpServer)
 	return app, func() {
 		cleanup()

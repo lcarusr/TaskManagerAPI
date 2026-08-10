@@ -1,7 +1,7 @@
 package server
 
 import (
-	v1 "task-manager-api/api/todo/v1"
+	v1 "task-manager-api/api/task/v1"
 	"task-manager-api/internal/conf"
 	"task-manager-api/internal/service"
 
@@ -10,7 +10,7 @@ import (
 )
 
 // NewGRPCServer new a gRPC server.
-func NewGRPCServer(c *conf.Server, todo *service.TodoService) *grpc.Server {
+func NewGRPCServer(c *conf.Server, task *service.TaskService) *grpc.Server {
 	var opts = []grpc.ServerOption{
 		grpc.Middleware(
 			recovery.Recovery(),
@@ -26,6 +26,6 @@ func NewGRPCServer(c *conf.Server, todo *service.TodoService) *grpc.Server {
 		opts = append(opts, grpc.Timeout(c.Grpc.Timeout.AsDuration()))
 	}
 	srv := grpc.NewServer(opts...)
-	v1.RegisterTodoServiceServer(srv, todo)
+	v1.RegisterTaskServiceServer(srv, task)
 	return srv
 }

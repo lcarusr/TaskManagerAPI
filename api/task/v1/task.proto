@@ -1,0 +1,119 @@
+syntax = "proto3";
+
+package task.v1;
+
+import "google/api/annotations.proto";
+import "google/api/field_behavior.proto";
+import "google/protobuf/empty.proto";
+import "google/protobuf/timestamp.proto";
+
+option go_package = "task-manager-api/api/task/v1;v1";
+option java_multiple_files = true;
+option java_package = "io.grpc.examples.task.v1";
+option java_outer_classname = "TaskProto";
+
+// TaskService is the RESTful Task Manager API.
+service TaskService {
+  // ListTasks returns all tasks.
+  rpc ListTasks (ListTasksRequest) returns (ListTasksReply) {
+    option (google.api.http) = {
+      get: "/tasks"
+    };
+  }
+
+  // GetTask returns a single task by its id.
+  rpc GetTask (GetTaskRequest) returns (Task) {
+    option (google.api.http) = {
+      get: "/tasks/{id}"
+    };
+  }
+
+  // CreateTask creates a new task.
+  rpc CreateTask (CreateTaskRequest) returns (Task) {
+    option (google.api.http) = {
+      post: "/tasks"
+      body: "*"
+    };
+  }
+
+  // UpdateTask updates an existing task.
+  rpc UpdateTask (UpdateTaskRequest) returns (Task) {
+    option (google.api.http) = {
+      put: "/tasks/{id}"
+      body: "*"
+    };
+  }
+
+  // DeleteTask deletes a task by its id.
+  rpc DeleteTask (DeleteTaskRequest) returns (google.protobuf.Empty) {
+    option (google.api.http) = {
+      delete: "/tasks/{id}"
+    };
+  }
+}
+
+// TaskStatus is the status of a task.
+enum TaskStatus {
+  TASK_STATUS_UNSPECIFIED = 0;
+  todo = 1;
+  in_progress = 2;
+  done = 3;
+}
+
+// Task is the canonical representation of a task.
+message Task {
+  // Server-assigned unique identifier (UUID v4).
+  string id = 1;
+  // Short human-readable title.
+  string title = 2;
+  // Detailed description of the task.
+  string description = 3;
+  // Current status of the task.
+  TaskStatus status = 4;
+  // Time at which the task was created. Server-assigned.
+  google.protobuf.Timestamp created_at = 5;
+  // Time at which the task was last modified. Server-assigned.
+  google.protobuf.Timestamp updated_at = 6;
+}
+
+// ListTasksRequest is the input for TaskService.ListTasks.
+message ListTasksRequest {}
+
+// ListTasksReply is the output for TaskService.ListTasks.
+message ListTasksReply {
+  repeated Task tasks = 1;
+}
+
+// GetTaskRequest is the input for TaskService.GetTask.
+message GetTaskRequest {
+  // Unique identifier of the task to retrieve.
+  string id = 1 [(google.api.field_behavior) = REQUIRED];
+}
+
+// CreateTaskRequest is the input for TaskService.CreateTask.
+message CreateTaskRequest {
+  // The title of the task. Required.
+  string title = 1 [(google.api.field_behavior) = REQUIRED];
+  // The description of the task. Optional.
+  string description = 2;
+  // The initial status of the task. Optional, defaults to todo.
+  TaskStatus status = 3;
+}
+
+// UpdateTaskRequest is the input for TaskService.UpdateTask.
+message UpdateTaskRequest {
+  // Unique identifier of the task to update.
+  string id = 1 [(google.api.field_behavior) = REQUIRED];
+  // The new title. Optional.
+  string title = 2;
+  // The new description. Optional.
+  string description = 3;
+  // The new status. Optional.
+  TaskStatus status = 4;
+}
+
+// DeleteTaskRequest is the input for TaskService.DeleteTask.
+message DeleteTaskRequest {
+  // Unique identifier of the task to delete.
+  string id = 1 [(google.api.field_behavior) = REQUIRED];
+}
