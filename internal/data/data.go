@@ -3,12 +3,12 @@ package data
 import (
 	"task-manager-api/internal/conf"
 
-	"github.com/go-kratos/kratos/v2/log"
+	"github.com/go-kratos/kratos/v3/log"
 	"github.com/google/wire"
 )
 
 // ProviderSet is data providers.
-var ProviderSet = wire.NewSet(NewData, NewGreeterRepo)
+var ProviderSet = wire.NewSet(NewData, NewTodoRepo)
 
 // Data .
 type Data struct {
@@ -16,9 +16,9 @@ type Data struct {
 }
 
 // NewData .
-func NewData(c *conf.Data, logger log.Logger) (*Data, func(), error) {
+func NewData(c *conf.Data) (*Data, func(), error) {
 	cleanup := func() {
-		log.NewHelper(logger).Info("closing the data resources")
+		log.Info("closing the data resources")
 	}
 	return &Data{}, cleanup, nil
 }

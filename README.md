@@ -18,8 +18,8 @@
 
 | 组件 | 选型 |
 |------|------|
-| 语言 | Go 1.21+（稳定版本，不追最新） |
-| 微服务底座 | Kratos v2.8 |
+| 语言 | Go 1.25+（稳定版本，不追最新） |
+| 微服务底座 | Kratos v3.0 |
 | API 定义 | proto3 + google.api.http |
 | 存储 | 内存 sync.Map（可插拔） |
 | 日志 / 限流 | Kratos log / ratelimit middleware |
@@ -42,7 +42,7 @@ task-manager-api/
 │   ├── service/               # 服务层
 │   └── conf/                  # 配置解析
 ├── k8s/                       # Kubernetes 资源清单
-├── third_party/               # proto 依赖
+├── buf.yaml / buf.gen.yaml    # proto 代码生成（buf）
 ├── Dockerfile
 ├── Makefile
 └── CONTRIBUTING.md            # Git 工作流规范
@@ -52,16 +52,16 @@ task-manager-api/
 
 ### 前置要求
 
-- Go 1.21+（`go version` 验证）
+- Go 1.25+（`go version` 验证）
+- buf（可选，修改 proto 后重新生成：`go install github.com/bufbuild/buf/cmd/buf@latest`）
 - Docker（可选，本地容器运行）
 - kubectl 可访问云服务器集群（可选，部署验证）
 
 ### 运行
 
 ```bash
-# 1. 安装依赖并生成代码
+# 1. 安装依赖
 go mod tidy
-go generate ./...
 
 # 2. 构建并启动
 go build -o ./bin/ ./...
