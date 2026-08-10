@@ -1,6 +1,6 @@
 # Task Manager API
 
-[![CI](https://github.com/<username>/task-manager-api/actions/workflows/ci.yml/badge.svg)](https://github.com/<username>/task-manager-api/actions/workflows/ci.yml)
+[![CI](https://github.com/lcarusr/TaskManagerAPI/actions/workflows/ci.yml/badge.svg)](https://github.com/lcarusr/TaskManagerAPI/actions/workflows/ci.yml)
 
 基于 **Go + Kratos 微服务框架** 的任务管理 RESTful API，完整 DevOps 工程化交付：容器化 + 云服务器 Kubernetes 部署 + GitHub Actions CI/CD 自动化流水线。
 
