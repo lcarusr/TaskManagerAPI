@@ -1,0 +1,23 @@
+# Git
+.git
+.gitignore
+
+# Go build outputs
+bin/
+*.exe
+*.test
+coverage.out
+
+# IDE & OS
+.idea/
+.vscode/
+.DS_Store
+Thumbs.db
+
+# Logs & temp
+*.log
+tmp/
+*.swp
+
+# Docs (不需要进入构建上下文)
+*.md

@@ -1,0 +1,173 @@
+# Generated with protoc-gen-openapi
+# https://github.com/google/gnostic/tree/master/cmd/protoc-gen-openapi
+
+openapi: 3.0.3
+info:
+    title: TaskService API
+    description: TaskService is the RESTful Task Manager API.
+    version: 0.0.1
+paths:
+    /tasks:
+        get:
+            tags:
+                - TaskService
+            description: ListTasks returns all tasks.
+            operationId: TaskService_ListTasks
+            responses:
+                "200":
+                    description: OK
+                    content:
+                        application/json:
+                            schema:
+                                $ref: '#/components/schemas/task.v1.ListTasksReply'
+        post:
+            tags:
+                - TaskService
+            description: CreateTask creates a new task.
+            operationId: TaskService_CreateTask
+            requestBody:
+                content:
+                    application/json:
+                        schema:
+                            $ref: '#/components/schemas/task.v1.CreateTaskRequest'
+                required: true
+            responses:
+                "200":
+                    description: OK
+                    content:
+                        application/json:
+                            schema:
+                                $ref: '#/components/schemas/task.v1.Task'
+    /tasks/{id}:
+        get:
+            tags:
+                - TaskService
+            description: GetTask returns a single task by its id.
+            operationId: TaskService_GetTask
+            parameters:
+                - name: id
+                  in: path
+                  description: Unique identifier of the task to retrieve.
+                  required: true
+                  schema:
+                    type: string
+            responses:
+                "200":
+                    description: OK
+                    content:
+                        application/json:
+                            schema:
+                                $ref: '#/components/schemas/task.v1.Task'
+        put:
+            tags:
+                - TaskService
+            description: UpdateTask updates an existing task.
+            operationId: TaskService_UpdateTask
+            parameters:
+                - name: id
+                  in: path
+                  description: Unique identifier of the task to update.
+                  required: true
+                  schema:
+                    type: string
+            requestBody:
+                content:
+                    application/json:
+                        schema:
+                            $ref: '#/components/schemas/task.v1.UpdateTaskRequest'
+                required: true
+            responses:
+                "200":
+                    description: OK
+                    content:
+                        application/json:
+                            schema:
+                                $ref: '#/components/schemas/task.v1.Task'
+        delete:
+            tags:
+                - TaskService
+            description: DeleteTask deletes a task by its id.
+            operationId: TaskService_DeleteTask
+            parameters:
+                - name: id
+                  in: path
+                  description: Unique identifier of the task to delete.
+                  required: true
+                  schema:
+                    type: string
+            responses:
+                "200":
+                    description: OK
+                    content: {}
+components:
+    schemas:
+        task.v1.CreateTaskRequest:
+            required:
+                - title
+            type: object
+            properties:
+                title:
+                    type: string
+                    description: The title of the task. Required.
+                description:
+                    type: string
+                    description: The description of the task. Optional.
+                status:
+                    type: integer
+                    description: The initial status of the task. Optional, defaults to todo.
+                    format: enum
+            description: CreateTaskRequest is the input for TaskService.CreateTask.
+        task.v1.ListTasksReply:
+            type: object
+            properties:
+                tasks:
+                    type: array
+                    items:
+                        $ref: '#/components/schemas/task.v1.Task'
+            description: ListTasksReply is the output for TaskService.ListTasks.
+        task.v1.Task:
+            type: object
+            properties:
+                id:
+                    type: string
+                    description: Server-assigned unique identifier (UUID v4).
+                title:
+                    type: string
+                    description: Short human-readable title.
+                description:
+                    type: string
+                    description: Detailed description of the task.
+                status:
+                    type: integer
+                    description: Current status of the task.
+                    format: enum
+                createdAt:
+                    type: string
+                    description: Time at which the task was created. Server-assigned.
+                    format: date-time
+                updatedAt:
+                    type: string
+                    description: Time at which the task was last modified. Server-assigned.
+                    format: date-time
+            description: Task is the canonical representation of a task.
+        task.v1.UpdateTaskRequest:
+            required:
+                - id
+            type: object
+            properties:
+                id:
+                    type: string
+                    description: Unique identifier of the task to update.
+                title:
+                    type: string
+                    description: The new title. Optional.
+                description:
+                    type: string
+                    description: The new description. Optional.
+                status:
+                    type: integer
+                    description: The new status. Optional.
+                    format: enum
+            description: UpdateTaskRequest is the input for TaskService.UpdateTask.
+tags:
+    - name: TaskService
