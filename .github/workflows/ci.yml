@@ -112,22 +112,25 @@ jobs:
     name: Deploy to cluster
     runs-on: ubuntu-latest
     needs: push
-    # 仅 main push 且配置了 KUBE_CONFIG 时执行（未配置则跳过，保持 CI 绿色）
-    if: github.event_name == 'push' && github.ref == 'refs/heads/main' && secrets.KUBE_CONFIG != ''
+    # 仅 main push 触发；KUBE_CONFIG 未配置时在 step 内跳过，保持 CI 绿色
+    if: github.event_name == 'push' && github.ref == 'refs/heads/main'
     steps:
       - name: Checkout
         uses: actions/checkout@v4
       - name: Setup kubectl
         uses: azure/setup-kubectl@v4
-      - name: Configure kubeconfig
+      - name: Deploy to cluster
+        env:
+          KUBE_CONFIG: ${{ secrets.KUBE_CONFIG }}
         run: |
+          if [ -z "$KUBE_CONFIG" ]; then
+            echo "::warning::KUBE_CONFIG secret is not configured, skipping deployment"
+            exit 0
+          fi
           mkdir -p "$HOME/.kube"
-          echo "${{ secrets.KUBE_CONFIG }}" | base64 -d > "$HOME/.kube/config"
+          echo "$KUBE_CONFIG" | base64 -d > "$HOME/.kube/config"
           chmod 600 "$HOME/.kube/config"
-      - name: Apply manifests
-        run: kubectl apply -f k8s/
-      - name: Rollout new image
-        run: |
+          kubectl apply -f k8s/
           kubectl set image deployment/task-service \
             task-service=${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}:${{ github.sha }} \
             -n task-manager --record
