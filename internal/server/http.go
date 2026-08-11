@@ -7,6 +7,7 @@ import (
 	"task-manager-api/internal/conf"
 	"task-manager-api/internal/service"
 
+	"github.com/go-kratos/kratos/v3/middleware/ratelimit"
 	"github.com/go-kratos/kratos/v3/middleware/recovery"
 	khttp "github.com/go-kratos/kratos/v3/transport/http"
 )
@@ -15,6 +16,8 @@ import (
 func NewHTTPServer(c *conf.Server, task *service.TaskService) *khttp.Server {
 	var opts = []khttp.ServerOption{
 		khttp.Middleware(
+			// 令牌桶限流：固定 100 QPS（突发 100），所有端点统一拦截，超限返回 429
+			ratelimit.Server(ratelimit.WithLimiter(newTokenBucket(100, 100))),
 			recovery.Recovery(),
 		),
 	}
