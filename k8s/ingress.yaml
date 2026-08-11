@@ -4,6 +4,8 @@ metadata:
   name: task-manager-ingress
   namespace: task-manager
 spec:
+  # 必须指定 class，否则 ingress-nginx 不会处理此 Ingress（表现为 404）
+  ingressClassName: nginx
   # 作业要求：域名 task-manager.local
   # 前置条件：集群已安装 Ingress Controller（如 ingress-nginx）
   rules:
